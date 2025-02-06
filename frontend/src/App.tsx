@@ -3,7 +3,6 @@ import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap stilini import et
 import { Modal, ModalBody, ModalHeader ,Progress} from "reactstrap";
 import { Info as InfoIcon } from "lucide-react";
-import { Helmet } from 'react-helmet';
 
 export default function MusicPlayer() {
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -145,10 +144,6 @@ export default function MusicPlayer() {
   
 
         <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-dark text-white p-4">
-            <Helmet>
-        <title>Türkiş Songless
-        </title>
-      </Helmet>
             <button
                 onClick={toggleInfoModal}
                 className="btn btn-link text-info position-absolute top-0 start-0 m-3 p-2"
@@ -240,7 +235,7 @@ export default function MusicPlayer() {
                         </div>
 
                     </div>
-                    <div className="w-100">
+                    <div className="w-50">
                         <Progress value={progressPercentage} color="info">
                         {limit[counter-1]}
                         </Progress>
