@@ -68,10 +68,10 @@ export default function MusicPlayer() {
             alert("Doğru cevap = "+trackName )
         }
         setLoading(true);
-        axios.get("http://localhost:5000/random-audio")
+        axios.get("https://sarki-tahmin-backend.onrender.com/random-audio")
             .then(response => {
                 console.log(counter);
-                setTrackUrl(`http://localhost:5000${response.data.url}`);
+                setTrackUrl(`https://sarki-tahmin-backend.onrender.com${response.data.url}`);
                 setTrackName(response.data.name);
                 setCounter(0)
                 setEndTime(limit[0]);
