@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap stilini import et
+import { Modal, ModalBody, ModalHeader } from "reactstrap";
+import { Info as InfoIcon } from "lucide-react";
 
 export default function MusicPlayer() {
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -18,7 +20,8 @@ export default function MusicPlayer() {
     const [selectedIndex, setSelectedIndex] = useState<number>(-1);
     const [skor,setSkor] = useState<number>(0);
     const [counter,setCounter] = useState<number>(0);
-
+    const [modalOpen, setModalOpen] = useState<boolean>(false);
+    const toggleInfoModal = () => setModalOpen(!modalOpen);
 
     // Backend'den doğru URL'yi almak
     useEffect(() => {
@@ -32,6 +35,8 @@ export default function MusicPlayer() {
                 setLoading(false);
             })
             .catch(() => setLoading(false));
+            toggleInfoModal();
+
     }, []);
 
 
@@ -135,6 +140,27 @@ export default function MusicPlayer() {
 
     return (
         <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-dark text-white p-4">
+            <button
+                onClick={toggleInfoModal}
+                className="btn btn-link text-info position-absolute top-0 start-0 m-3 p-2"
+                style={{fontSize: "1.5rem"}}
+            >
+                <InfoIcon />
+
+            </button>
+
+            <Modal isOpen={modalOpen} toggle={toggleInfoModal} centered>
+                <ModalHeader toggle={toggleInfoModal}>Bilgi</ModalHeader>
+                <ModalBody>
+                    <p>
+                        <strong>Türkiş Songless</strong>
+                        <br/>
+                        Rastgele Şarkıların kısa bir aralığını dinleyerek tahmin edin.
+                        Süre Arttırmak İçin Help? butonunu kullanın 6 adet arttırma hakkınız vardır
+                        Aşmanız halinde sonraki şarkıya geçilir.
+                    </p>
+                </ModalBody>
+            </Modal>
             <h1 className="display-4 text-success mb-4 text-center">Türkiş Songless</h1>
 
             {loading ? (
