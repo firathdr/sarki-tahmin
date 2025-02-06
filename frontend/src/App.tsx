@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap stilini import et
-import { Modal, ModalBody, ModalHeader } from "reactstrap";
+import { Modal, ModalBody, ModalHeader ,Progress} from "reactstrap";
 import { Info as InfoIcon } from "lucide-react";
 
 export default function MusicPlayer() {
@@ -10,7 +10,7 @@ export default function MusicPlayer() {
     const [trackUrl, setTrackUrl] = useState<string>("");
     const [trackName, setTrackName] = useState<string>("");
     const [startTime, setStartTime] = useState<number>(20); // Başlangıç süresi
-    const limit=[0.3,1,3,6,15,30,120];
+    const limit=[1,3,6,15,30,100];
     const [endTime, setEndTime] = useState<number>(limit[0]); // Bitiş süresi
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [text, setText] = useState<string>("");
@@ -22,6 +22,7 @@ export default function MusicPlayer() {
     const [counter,setCounter] = useState<number>(0);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const toggleInfoModal = () => setModalOpen(!modalOpen);
+    let progressPercentage = (limit[counter] / (limit.length - 1))*10;
 
     // Backend'den doğru URL'yi almak
     useEffect(() => {
@@ -229,6 +230,12 @@ export default function MusicPlayer() {
                         <div className="position-absolute top-0 end-0 m-3">
                             <span className="badge bg-success fs-5">Doğru Sayısı: {skor}</span>
                         </div>
+
+                    </div>
+                    <div className="w-100">
+                        <Progress value={progressPercentage} color="info">
+
+                        </Progress>
                     </div>
                 </>
 
