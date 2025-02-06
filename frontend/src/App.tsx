@@ -144,7 +144,9 @@ export default function MusicPlayer() {
     return (
         <div>
             <Helmet>
-                <title>Site Başlığı</title>
+                <title>Şarkıyı Bil
+                
+                </title>
             </Helmet>
 
         <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-dark text-white p-4">
@@ -161,7 +163,7 @@ export default function MusicPlayer() {
                 <ModalHeader toggle={toggleInfoModal}>Bilgi</ModalHeader>
                 <ModalBody>
                     <p>
-                        <strong>Türkiş Songless</strong>
+                        <strong>Şarkıyı Bil</strong>
                         <br/>
                         Rastgele Şarkıların kısa bir aralığını dinleyerek tahmin edin.
                         Süre Arttırmak İçin Help? butonunu kullanın 6 adet arttırma hakkınız vardır
