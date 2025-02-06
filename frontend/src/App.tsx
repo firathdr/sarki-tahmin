@@ -9,11 +9,10 @@ export default function MusicPlayer() {
     const [loading, setLoading] = useState<boolean>(false);
     const [trackUrl, setTrackUrl] = useState<string>("");
     const [trackName, setTrackName] = useState<string>("");
-    const [startTime, setStartTime] = useState<number>(20); // Başlangıç süresi
+    const [startTime] = useState<number>(20); // Başlangıç süresi
     const limit=[1,3,6,15,30,100];
     const [endTime, setEndTime] = useState<number>(limit[0]); // Bitiş süresi
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
-    const [text, setText] = useState<string>("");
     const [liste, setListe] = useState<string>("");
     const [query, setQuery] = useState<string>("");
     const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -115,18 +114,20 @@ export default function MusicPlayer() {
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
+        const value = e.target.value.trim();
         setQuery(value);
-
+    
         if (value) {
-            const filtered = liste.filter((song: string) =>
-                song.toLowerCase().includes(value.toLowerCase())
-            );
+            // Ensure 'liste' is an array before filtering
+            const filtered = Array.isArray(liste)
+                ? liste.filter((song: string) => song.toLowerCase().includes(value.toLowerCase()))
+                : [];
             setSuggestions(filtered);
         } else {
             setSuggestions([]);
         }
     };
+    
     const handleSubmit = () => {
         if (query.trim().toLowerCase() === trackName.toLowerCase()) {
             setCounter(0);
@@ -222,7 +223,7 @@ export default function MusicPlayer() {
                             Help?
                         </button>
                         <button
-                            onClick={toggleNext}
+                            onClick={() => toggleNext(true)}
                             className="btn btn-outline-primary btn-lg"
                         >
                             Next
