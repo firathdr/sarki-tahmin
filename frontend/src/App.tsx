@@ -26,9 +26,9 @@ export default function MusicPlayer() {
     // Backend'den doğru URL'yi almak
     useEffect(() => {
         setLoading(true);
-        axios.get("http://localhost:5000/random-audio")
+        axios.get("https://sarki-tahmin-backend.onrender.com/random-audio")
             .then(response => {
-                setTrackUrl(`http://localhost:5000${response.data.url}`);
+                setTrackUrl(`https://sarki-tahmin-backend.onrender.com${response.data.url}`);
                 setTrackName(response.data.name);
                 setListe(response.data.list);
                 console.log(response.data.name);
