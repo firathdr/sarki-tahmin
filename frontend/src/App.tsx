@@ -3,6 +3,7 @@ import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap stilini import et
 import { Modal, ModalBody, ModalHeader ,Progress} from "reactstrap";
 import { Info as InfoIcon } from "lucide-react";
+import { Helmet } from 'react-helmet';
 
 export default function MusicPlayer() {
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -141,7 +142,10 @@ export default function MusicPlayer() {
     };
 
     return (
-  
+        <div>
+            <Helmet>
+                <title>Site Başlığı</title>
+            </Helmet>
 
         <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-dark text-white p-4">
             <button
@@ -206,9 +210,11 @@ export default function MusicPlayer() {
                             </ul>
                         )}
                     </div>
-                    <button className="btn btn-success mt-2" onClick={handleSubmit}>
-                        Gönder
-                    </button>
+                    <div className="mb-4 w-90 position-relative">
+                        <button className="btn btn-success mt-2" onClick={handleSubmit}>
+                            Gönder
+                        </button>
+                    </div>
 
                     <div className="d-flex justify-content-center gap-3 mb-4">
                         <button
@@ -244,6 +250,8 @@ export default function MusicPlayer() {
 
             )}
         </div>
+        </div>
+
     );
 
 }
