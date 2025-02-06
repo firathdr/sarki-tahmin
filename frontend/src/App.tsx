@@ -240,7 +240,7 @@ export default function MusicPlayer() {
                         </div>
 
                     </div>
-                    <div className="w-50">
+                    <div className="w-100">
                         <Progress value={progressPercentage} color="info">
                         {limit[counter-1]}
                         </Progress>
