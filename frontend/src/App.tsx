@@ -22,7 +22,7 @@ export default function MusicPlayer() {
     const [counter,setCounter] = useState<number>(0);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const toggleInfoModal = () => setModalOpen(!modalOpen);
-    let progressPercentage = (limit[counter] / (limit.length - 1))*10;
+    const progressPercentage = (limit[counter-1])*2;
 
     // Backend'den doğru URL'yi almak
     useEffect(() => {
