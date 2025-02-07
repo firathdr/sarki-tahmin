@@ -11,7 +11,7 @@ export default function MusicPlayer() {
     const [trackUrl, setTrackUrl] = useState<string>("");
     const [trackName, setTrackName] = useState<string>("");
     const [startTime] = useState<number>(20); // Başlangıç süresi
-    const limit=[1,3,6,15,30,100];
+    const limit=[30,35,40,50,55,60];
     const [endTime, setEndTime] = useState<number>(limit[0]); // Bitiş süresi
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [liste, setListe] = useState<string>("");
