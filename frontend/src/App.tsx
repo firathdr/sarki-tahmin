@@ -166,8 +166,7 @@ export default function MusicPlayer() {
                         <strong>Şarkıyı Bil</strong>
                         <br/>
                         Rastgele Şarkıların kısa bir aralığını dinleyerek tahmin edin.
-                        Süre Arttırmak İçin Help? butonunu kullanın 6 adet arttırma hakkınız vardır
-                        Aşmanız halinde sonraki şarkıya geçilir.
+                        Sunucu inaktife düşmesi sebebiyle 3-4 dakika içinde oyun oynanabilir duruma geçicektir.
                     </p>
                 </ModalBody>
             </Modal>
@@ -225,28 +224,31 @@ export default function MusicPlayer() {
                         >
                             {isPlaying ? "Pause" : "Play"}
                         </button>
+                        {/*
+                            <button
+                                onClick={toggleUp}
+                                className="btn btn-outline-info btn-lg"
+                            >
+                                Help?
+                            </button>
+                        */}
 
-                        <button
-                            onClick={toggleUp}
-                            className="btn btn-outline-info btn-lg"
-                        >
-                            Help?
-                        </button>
                         <button
                             onClick={() => toggleNext(true)}
                             className="btn btn-outline-primary btn-lg"
                         >
-                            Next
+                        Next
                         </button>
                         <div className="position-absolute top-0 end-0 m-3">
                             <span className="badge bg-success fs-5">Doğru Sayısı: {skor}</span>
                         </div>
 
                     </div>
+
                     <div className="w-50">
-                        <Progress value={progressPercentage} color="info">
+                        {/*    <Progress value={progressPercentage} color="info">
                         {limit[counter-1]}
-                        </Progress>
+                        </Progress>*/}
                     </div>
                 </>
 
