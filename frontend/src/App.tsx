@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap stilini import et
-import { Modal, ModalBody, ModalHeader ,Progress} from "reactstrap";
+import { Modal, ModalBody, ModalHeader /*,Progress*/} from "reactstrap";
 import { Info as InfoIcon } from "lucide-react";
 import { Helmet } from 'react-helmet';
 
@@ -22,7 +22,7 @@ export default function MusicPlayer() {
     const [counter,setCounter] = useState<number>(0);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const toggleInfoModal = () => setModalOpen(!modalOpen);
-    const progressPercentage = (limit[counter-1])*2;
+    //const progressPercentage = (limit[counter-1])*2;
 
     // Backend'den doğru URL'yi almak
     useEffect(() => {
@@ -81,7 +81,7 @@ export default function MusicPlayer() {
             .catch(() => setLoading(false));
 
     };
-    const toggleUp = () => {
+    /*const toggleUp = () => {
         setCounter(counter + 1);
         setEndTime(limit[counter]);
         if (counter==limit.length) {
@@ -91,7 +91,7 @@ export default function MusicPlayer() {
         }
         console.log(counter);
 
-    }
+    }*/
 
 
 
