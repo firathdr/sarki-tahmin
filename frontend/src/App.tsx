@@ -41,18 +41,23 @@ export default function MusicPlayer() {
     }, []);
 
 
-    const togglePlay = () => {
+    const togglePlay = async () => {
         if (audioRef.current) {
             audioRef.current.currentTime = 20;
 
             if (isPlaying) {
                 audioRef.current.pause();
             } else {
-                audioRef.current.play();
+                try {
+                    await audioRef.current.play();
+                } catch (error) {
+                    console.error("Oynatma hatası:", error);
+                }
             }
             setIsPlaying(!isPlaying);
         }
     };
+
     const handleTimeUpdate = () => {
         if (audioRef.current) {
             // Eğer ses bitiş süresine ulaşırsa, durdur
@@ -67,6 +72,7 @@ export default function MusicPlayer() {
     const toggleNext = (deger:boolean) => {
         if (deger) {
             alert("Doğru cevap = "+trackName )
+            setIsPlaying(false);
         }
         setLoading(true);
         axios.get("https://sarki-tahmin-backend.onrender.com/random-audio")
