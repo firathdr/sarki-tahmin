@@ -170,7 +170,7 @@ export default function MusicPlayer() {
                     </p>
                 </ModalBody>
             </Modal>
-            <h1 className="display-4 text-success mb-4 text-center">Türkiş Songless</h1>
+            <h1 className="display-4 text-success mb-4 text-center">Şarkıyı Bil</h1>
 
             {loading ? (
                 <p>Loading song...</p>
