@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap stilini import et
-import { Modal, ModalBody, ModalHeader /*,Progress*/} from "reactstrap";
+import { Modal, ModalBody, ModalHeader, Progress } from "reactstrap";
 import { Info as InfoIcon } from "lucide-react";
 import { Helmet } from 'react-helmet';
+import { io, Socket } from 'socket.io-client';
 
 export default function MusicPlayer() {
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -23,6 +24,60 @@ export default function MusicPlayer() {
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const toggleInfoModal = () => setModalOpen(!modalOpen);
     //const progressPercentage = (limit[counter-1])*2;
+    const [inputPlaylistId, setInputPlaylistId] = useState(''); // Kullanıcının gireceği playlist ID'si için state
+    
+    // İlerleme çubuğu için yeni state'ler
+    const [downloadProgress, setDownloadProgress] = useState<number>(0);
+    const [isDownloading, setIsDownloading] = useState<boolean>(false);
+    const [downloadStatus, setDownloadStatus] = useState<string>("");
+    
+    // Socket.IO bağlantısı için ref
+    const socketRef = useRef<Socket | null>(null);
+
+    // Socket.IO bağlantısını kur
+    useEffect(() => {
+        // Socket.IO bağlantısını kur
+        socketRef.current = io('https://sarki-tahmin-backend.onrender.com');
+        
+        // Socket.IO event listener'ları
+        if (socketRef.current) {
+            socketRef.current.on('connect', () => {
+                console.log('Socket.IO bağlantısı kuruldu');
+            });
+            
+            socketRef.current.on('download_progress', (data) => {
+                setDownloadProgress(data.progress);
+                setDownloadStatus(data.status || `İndiriliyor... ${data.progress}%`);
+                
+                // İndirme tamamlandığında state'leri güncelle
+                if (data.progress === 100) {
+                    setIsDownloading(false);
+                    setLoading(false);
+                    
+                    // 3 saniye sonra progress'i sıfırla
+                    setTimeout(() => {
+                        setDownloadProgress(0);
+                        setDownloadStatus("");
+                    }, 3000);
+                }
+            });
+            
+            socketRef.current.on('disconnect', () => {
+                console.log('Socket.IO bağlantısı kesildi');
+            });
+            
+            socketRef.current.on('error', (error) => {
+                console.error('Socket.IO hatası:', error);
+            });
+        }
+        
+        // Cleanup
+        return () => {
+            if (socketRef.current) {
+                socketRef.current.disconnect();
+            }
+        };
+    }, []);
 
     // Backend'den doğru URL'yi almak
     useEffect(() => {
@@ -75,6 +130,15 @@ export default function MusicPlayer() {
             setIsPlaying(false);
         }
         setLoading(true);
+        
+        // trackName boş değilse silme işlemi yap
+        if (trackName && trackName.trim() !== '') {
+            axios.get(`https://sarki-tahmin-backend.onrender.com/delete-music/${trackName}`)
+                .catch(error => {
+                    console.error("Silme hatası:", error);
+                });
+        }
+        
         axios.get("https://sarki-tahmin-backend.onrender.com/random-audio")
             .then(response => {
                 console.log(counter);
@@ -84,8 +148,76 @@ export default function MusicPlayer() {
                 setEndTime(limit[0]);
                 setLoading(false);
             })
-            .catch(() => setLoading(false));
+            .catch((error) => {
+                console.error("Random audio hatası:", error);
+                setLoading(false);
+            });
+    };
+    const toggleDownload = (playlistId: string) => {
+        if (!playlistId || playlistId.trim() === '') {
+            alert("Lütfen geçerli bir YouTube Playlist ID'si girin!");
+            return;
+        }
 
+        // İndirme durumunu başlat
+        setIsDownloading(true);
+        setDownloadProgress(0);
+        setDownloadStatus("İndirme başlatılıyor...");
+        setLoading(true);
+
+        // Socket.IO üzerinden indirme başlat
+        if (socketRef.current && socketRef.current.connected) {
+            socketRef.current.emit('start_download', {
+                playlist_id: playlistId
+            });
+        } else {
+            // Socket.IO bağlantısı yoksa hata mesajı göster
+            setDownloadStatus("Bağlantı hatası! Lütfen sayfayı yenileyin.");
+            setIsDownloading(false);
+            setLoading(false);
+            return;
+        }
+
+        // Backend endpoint'ine GET isteği (artık gerekli değil, sadece Socket.IO kullanıyoruz)
+        // axios.get(`http://127.0.0.1:5000/playlist-link/${playlistId}`)
+        //     .then(response => {
+        //         // Sunucudan gelen cevaba göre state'leri güncelle
+        //         setTrackUrl(`http://127.0.0.1:5000${response.data.url}`);
+        //         setTrackName(response.data.name);
+        //         setListe(response.data.list);
+        //         console.log("Sunucudan gelen cevap:", response.data);
+        //         
+        //         // Polling'i durdur
+        //         clearInterval(progressInterval);
+        //         
+        //         // İndirme tamamlandı
+        //         setDownloadProgress(100);
+        //         setDownloadStatus("İndirme tamamlandı!");
+        //         setLoading(false);
+        //         setIsDownloading(false);
+        //         
+        //         // 2 saniye sonra progress'i sıfırla
+        //         setTimeout(() => {
+        //             setDownloadProgress(0);
+        //             setDownloadStatus("");
+        //         }, 2000);
+        //     })
+        //     .catch(error => {
+        //         console.error("İndirme isteği sırasında hata oluştu:", error);
+        //         
+        //         // Polling'i durdur
+        //         clearInterval(progressInterval);
+        //         
+        //         setDownloadStatus("İndirme sırasında hata oluştu!");
+        //         setLoading(false);
+        //         setIsDownloading(false);
+        //         
+        //         // 3 saniye sonra hata mesajını temizle
+        //         setTimeout(() => {
+        //             setDownloadProgress(0);
+        //             setDownloadStatus("");
+        //         }, 3000);
+        //     });
     };
     /*const toggleUp = () => {
         setCounter(counter + 1);
@@ -245,6 +377,51 @@ export default function MusicPlayer() {
                         >
                         Next
                         </button>
+                        <div>
+                            {/* Kullanıcının playlist ID'sini gireceği input alanı */}
+                            <input
+                                type="text"
+                                value={inputPlaylistId}
+                                onChange={(e) => setInputPlaylistId(e.target.value)}
+                                placeholder="YouTube Playlist ID'sini girin"
+                                className="form-control mb-3"
+                            />
+
+                            {/* İndirme Butonu */}
+                            <button
+                                onClick={() => toggleDownload(inputPlaylistId)}
+                                className="btn btn-outline-primary btn-lg"
+                                disabled={isDownloading}
+                            >
+                                {isDownloading ? 'İndiriliyor...' : 'Download List'}
+                            </button>
+
+                            {/* İlerleme Çubuğu */}
+                            {isDownloading && (
+                                <div className="mt-3">
+                                    <div className="d-flex justify-content-between align-items-center mb-2">
+                                        <span className="text-muted">İndirme İlerlemesi</span>
+                                        <span className="badge bg-primary">{Math.round(downloadProgress)}%</span>
+                                    </div>
+                                    <Progress 
+                                        value={downloadProgress} 
+                                        color="success"
+                                        className="mb-2"
+                                        animated={downloadProgress < 100}
+                                    />
+                                    <small className="text-muted">{downloadStatus}</small>
+                                </div>
+                            )}
+
+                            {/* Tamamlanma/Hata Mesajı */}
+                            {!isDownloading && downloadStatus && (
+                                <div className="mt-2">
+                                    <div className={`alert alert-${downloadProgress === 100 ? 'success' : 'danger'} py-2`}>
+                                        <small>{downloadStatus}</small>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                         <div className="position-absolute top-0 end-0 m-3">
                             <span className="badge bg-success fs-5">Doğru Sayısı: {skor}</span>
                         </div>
